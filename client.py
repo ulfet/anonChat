@@ -50,12 +50,21 @@ def printCurrentState():
 def connectToServer():
 	global CURRENT_STATE
 	SERVER.connect(ADDRESS)
-	print "Connection to", ADDRESS
+	print "	Connection to", ADDRESS
 	CURRENT_STATE = NOT_AUTHENTICATED
 
+def getCredentialsFromCMD():
+	if len(sys.argv) != 3:
+		print "Usage:"
+		print "	python client.py userName password"
+		exit(-1)
+	else:
+		name = sys.argv[1]
+		password = sys.argv[2]
+		return name, password
+
 def generatePassword():
-	name = "ulfet"
-	password = "ulfetp"
+	name, password = getCredentialsFromCMD()
 	message = name + " " + password
 	encryptedMessage = fAuth.encrypt(message)
 	return encryptedMessage
@@ -64,21 +73,23 @@ def authenticateMyself():
 	# server need to be in connection
 	global CURRENT_STATE
 	credential = generatePassword()
-	print "Sending: ", credential
+	print "	[SUB]: Sending credentials "
 	SERVER.sendall(credential)
 	answer = SERVER.recv(BUFFER_SIZE)
 	decryptedAnswer = fAuth.decrypt(answer)
-	print decryptedAnswer
+	# print decryptedAnswer
 	if decryptedAnswer == "Valid":
+		print "	[SUB]: Authenticated"
 		CURRENT_STATE = ROOM_NOT_READY
 	else:
-		print "Cannot authenticate"
+		print "	[SUB]: Cannot authenticate"
 		sys.exit(-1)
 
 def waitForRoomReady():
 	global CURRENT_STATE
 	while 1:
-		time.sleep(5)
+		time.sleep(0.5)
+		print("	[SUB]: Waiting for room to be complete")
 		# send message
 		message = "ROOM_STATUS"
 		encryptedMessage = fAuth.encrypt(message)
@@ -92,7 +103,8 @@ def waitForRoomReady():
 				CURRENT_STATE = READY
 				return
 			else:
-				print "ROOM_NOT_READY"
+				# print "ROOM_NOT_READY"
+				continue
 
 		except:
 			print "Failed waiting for room readiness"
@@ -107,13 +119,17 @@ def broadcastListener():
 		print "\n",decryptedAnswer
 
 def messageSender():
+	print "You can start typing:\n"
 	while 1:
-		message = raw_input("SEND: ")
+		message = raw_input("")
 		encryptedMessage = fAuth.encrypt(message)
 		SERVER.send(encryptedMessage)
 
 
 def main():
+
+	getCredentialsFromCMD()
+
 	printCurrentState()
 
 	connectToServer()
