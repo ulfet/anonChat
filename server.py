@@ -11,11 +11,11 @@ import threading
 import time
 
 # initial server participant configuration
-chatCapacity = 2
+chatCapacity = 3
 currentClients = []
 
 clientNames = ["ulfet", "ozgur", "jennifer", "mary", "hamza"]
-clientPasswords = ["ulfetp", "ozgurp", "jenniferp", "marryp", "hamzap"]
+clientPasswords = ["ulfetp", "ozgurp", "jenniferp", "maryp", "hamzap"]
 clientStatus = [False, False, False, False, False]
 
 KNOWNADRESSES = {}
