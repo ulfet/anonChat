@@ -155,20 +155,21 @@ top = Tk()
 top.title("Cave - " + sys.argv[1])
 
 messages_frame = Frame(top)
+messages_frame.pack(fill=BOTH, expand=1)
 my_message = StringVar()  # For the messages to be sent.
 my_message.set("Type your message here.")
 scrollbar = Scrollbar(messages_frame)  # To navigate through past messages.
 
 # Following will contain the messages.
-message_list = Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
+message_list = Listbox(messages_frame, height=20, width=50, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=RIGHT, fill=Y)
-message_list.pack(side=LEFT, fill=BOTH)
+message_list.pack(side=LEFT, fill=BOTH, expand=1)
 message_list.pack()
 messages_frame.pack()
 
 entry_field = Entry(top, textvariable=my_message)
 entry_field.bind("<Return>", messageSender)
-entry_field.pack()
+entry_field.pack(fill=BOTH, expand=1)
 send_button = Button(top, text="Send", command=messageSender)
 send_button.pack()
 
