@@ -1,0 +1,44 @@
+########################
+
+Ülfet ÇETİN - 2036440
+
+Veli Özgür YILDIZ - 2036366
+
+########################
+
+Our project is Anonymous Message Broadcast.
+
+########################
+
+We did not use any code that does not belong to us. As stated in the report, we used 2 external libraries:
+	- Fernet (https://cryptography.io/en/latest/fernet/)
+	- Tkinter (https://docs.python.org/2/library/tkinter.html) (In standart library)
+
+########################
+
+There exists two source code files in our project:
+
+	- server.py: The server side of the project. It should be run before any clients. Note that it uses the port 1789, the port number should be checked whether it is available or not.
+
+	- client.py: The client side of the project.
+
+########################
+
+HOW TO RUN:
+
+For server side:
+	python server.py
+
+For client side:
+	python clientWithGUI.py <username> <password>
+
+########################
+
+WARNING: 
+
+- As stated above, server must be running before any client runs.
+- <username> and <password> fields are credentials for each users, in Plain Text.
+- User can modify chat room capacity in server.py, line 14.
+- Note that server.py uses the port 1789, the port number should be checked whether it is available or not.
+
+########################
