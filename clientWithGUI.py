@@ -1,12 +1,14 @@
-from Tkinter import *
+import time
+import sys
+import thread
+
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.fernet import Fernet
-import time
-import sys
-import thread
+
+from Tkinter import *
 
 SECRET_KEY_FOR_AUTH = "E-EKHr6Y9kCB4qUJQ-vAWf0d-qXMM9mGwhTjYVRLq6U="
 
@@ -99,7 +101,7 @@ def authenticateMyself():
 def waitForRoomReady():
     global CURRENT_STATE
     while 1:
-        time.sleep(0.5)
+        time.sleep(1)
         print("	[SUB]: Waiting for room to be complete")
         # send message
         message = "ROOM_STATUS"
@@ -135,6 +137,7 @@ def broadcastListener():
 
 
 def messageSender(event=None):
+    global my_message
     message = my_message.get()
     my_message.set("")
     encryptedMessage = fAuth.encrypt(message)
@@ -142,6 +145,7 @@ def messageSender(event=None):
     if message == "{quit}":
         CLIENT_SOCKET.close()
         top.quit()
+        exit()
 
 
 def on_closing(event=None):
@@ -150,35 +154,41 @@ def on_closing(event=None):
     messageSender()
 
 
-# Tkinter configurations.
-top = Tk()
-top.title("Cave - " + sys.argv[1])
+message_list = ""
+top = ""
+my_message = ""
+def configureGUI():
+    global message_list
+    global top
+    global my_message
+    # Tkinter configurations.
+    top = Tk()
+    top.title("Cave - " + sys.argv[1])
 
-messages_frame = Frame(top)
-messages_frame.pack(fill=BOTH, expand=1)
-my_message = StringVar()  # For the messages to be sent.
-my_message.set("Type your message here.")
-scrollbar = Scrollbar(messages_frame)  # To navigate through past messages.
+    messages_frame = Frame(top)
+    messages_frame.pack(fill=BOTH, expand=1)
+    my_message = StringVar()  # For the messages to be sent.
+    my_message.set("")
+    scrollbar = Scrollbar(messages_frame)  # To navigate through past messages.
 
-# Following will contain the messages.
-message_list = Listbox(messages_frame, height=20, width=50, yscrollcommand=scrollbar.set)
-scrollbar.pack(side=RIGHT, fill=Y)
-message_list.pack(side=LEFT, fill=BOTH, expand=1)
-message_list.pack()
-messages_frame.pack()
+    # Following will contain the messages.
+    message_list = Listbox(messages_frame, height=20, width=50, yscrollcommand=scrollbar.set)
+    scrollbar.pack(side=RIGHT, fill=Y)
+    message_list.pack(side=LEFT, fill=BOTH, expand=1)
+    message_list.pack()
+    messages_frame.pack()
 
-entry_field = Entry(top, textvariable=my_message)
-entry_field.bind("<Return>", messageSender)
-entry_field.pack(fill=BOTH, expand=1)
-send_button = Button(top, text="Send", command=messageSender)
-send_button.pack()
+    entry_field = Entry(top, textvariable=my_message)
+    entry_field.bind("<Return>", messageSender)
+    entry_field.pack(fill=BOTH, expand=1)
+    send_button = Button(top, text="Send", command=messageSender)
+    send_button.pack()
 
-top.protocol("VM_DELETE_WINDOW", on_closing)
+    top.protocol("VM_DELETE_WINDOW", on_closing)
 
 
 def main():
     getCredentialsFromCMD()
-
     printCurrentState()
 
     connectToServer()
@@ -190,9 +200,10 @@ def main():
     waitForRoomReady()
     printCurrentState()
 
-    # receive_thread = Thread(target=broadcastListener)
+    configureGUI()
     thread.start_new_thread(broadcastListener, ())
-    # thread.start_new_thread(messageSender, ())
+
+    # mainloop, a function of TK library
     mainloop()
 
 
