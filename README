@@ -20,7 +20,7 @@ There exists two source code files in our project:
 
 	- server.py: The server side of the project. It should be run before any clients. Note that it uses the port 1789, the port number should be checked whether it is available or not.
 
-	- client.py: The client side of the project.
+	- clientWithGUI.py: The client side of the project, includes a minimalist graphical user interface(GUI).
 
 ########################
 
